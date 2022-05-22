@@ -20,7 +20,7 @@ function Detail() {
   const { id } = useParams();
   const [currentProduct, setCurrentProduct] = useState({})
   const { loading, data } = useQuery(QUERY_PRODUCTS);
-  const { products } = state;
+  const { products, cart } = state;
 
   useEffect(() => {
     if (products.length) {
@@ -34,10 +34,20 @@ function Detail() {
   }, [products, data, dispatch, id]);
 
   const addToCart = () => {
-    dispatch({
-      type: ADD_TO_CART,
-      product: { ...currentProduct, purchaseQuantity: 1 }
-    });
+    const itemInCart = cart.find((cartItem) => cartItem._id === id);
+  
+    if (itemInCart) {
+      dispatch({
+        type: UPDATE_CART_QUANTITY,
+        _id: id,
+        purchaseQuantity: parseInt(itemInCart.purchaseQuantity) + 1
+      });
+    } else {
+      dispatch({
+        type: ADD_TO_CART,
+        product: { ...currentProduct, purchaseQuantity: 1 }
+      });
+    }
   };
   
   return (

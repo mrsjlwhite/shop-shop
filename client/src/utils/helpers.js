@@ -17,7 +17,9 @@ export function idbPromise(storeName, method, object) {
     // if version has changed (or if this is the first time using the database), run this method and create the three object stores 
     // note: only runsif the browser notices that the version number in the .open() has changed since last time
     request.onupgradeneeded = function (e) {
-      const db = request.result;
+      // const db = request.result;
+      db = e.target.result;
+      
       // create object store for each type of data and set "primary" key index to be the `_id` of the data
       db.createObjectStore('products', { keyPath: '_id' });
       db.createObjectStore('categories', { keyPath: '_id' });
@@ -32,7 +34,9 @@ export function idbPromise(storeName, method, object) {
     // on database open success
     request.onsuccess = function (e) {
       // save a reference of the database to the `db` variable
-      db = request.result;
+      // db = request.result;
+      db = e.target.result;
+      
       // open a transaction do whatever we pass into `storeName` (must match one of the object store names)
       tx = db.transaction(storeName, 'readwrite');
       // save a reference to that object store
@@ -44,13 +48,17 @@ export function idbPromise(storeName, method, object) {
       };
 
       switch (method) {
+        case 'add':
+          store.add(object);
+          resolve(object);
+          break;
         case 'put':
           store.put(object);
           resolve(object);
           break;
         case 'get':
           const all = store.getAll();
-          all.onsuccess = function() {
+          all.onsuccess = function () {
             resolve(all.result);
           };
           break;
@@ -61,7 +69,7 @@ export function idbPromise(storeName, method, object) {
           console.log('No valid method');
           break;
       }
-      
+
       // when the transaction is complete, close the connection
       tx.oncomplete = function () {
         db.close();

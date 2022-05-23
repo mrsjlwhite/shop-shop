@@ -17,6 +17,7 @@
     "concurrently": "^5.1.0"
   },
   "dependencies": {
-    "kill-port": "^2.0.0"
+    "kill-port": "^2.0.0",
+    "strip": "^3.0.0"
   }
 }

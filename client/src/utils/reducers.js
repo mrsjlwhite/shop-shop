@@ -1,8 +1,8 @@
 import { useReducer } from 'react';
 import {
-  UPDATE_PRODUCTS,
-  UPDATE_CATEGORIES,
-  UPDATE_CURRENT_CATEGORY,
+  // UPDATE_PRODUCTS,
+  // UPDATE_CATEGORIES,
+  // UPDATE_CURRENT_CATEGORY,
   ADD_TO_CART,
   ADD_MULTIPLE_TO_CART,
   REMOVE_FROM_CART,
@@ -14,22 +14,22 @@ import {
 export const reducer = (state, action) => {
   switch (action.type) {
     // if action type value is the value of `UPDATE_PRODUCTS`, return a new state object with an updated products array
-    case UPDATE_PRODUCTS:
-      return {
-        ...state,
-        products: [...action.products],
-      };
+    // case UPDATE_PRODUCTS:
+    //   return {
+    //     ...state,
+    //     products: [...action.products],
+    //   };
     // if action type value is the value of `UPDATE_CATEGORIES`, return a new state object with an updated categories array
-    case UPDATE_CATEGORIES:
-      return {
-        ...state,
-        categories: [...action.categories]
-      };
-    case UPDATE_CURRENT_CATEGORY:
-      return {
-        ...state,
-        currentCategory: action.currentCategory
-      };
+    // case UPDATE_CATEGORIES:
+    //   return {
+    //     ...state,
+    //     categories: [...action.categories]
+    //   };
+    // case UPDATE_CURRENT_CATEGORY:
+    //   return {
+    //     ...state,
+    //     currentCategory: action.currentCategory
+    //   };
     case ADD_TO_CART:
       return {
         ...state, // preserving everything else on state

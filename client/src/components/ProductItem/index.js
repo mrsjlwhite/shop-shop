@@ -1,11 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { pluralize } from "../../utils/helpers"
-
-import { useStoreContext } from '../../utils/GlobalState';
-import { ADD_TO_CART, UPDATE_CART_QUANTITY } from '../../utils/actions';
-
+import { pluralize } from "../../utils/helpers";
 import { idbPromise } from "../../utils/helpers";
+import { useSelector, useDispatch } from 'react-redux';
+import { addToCart, updateCartQuantity } from '../../redux/cartSlice';
 
 function ProductItem(item) {
   const {
@@ -15,26 +13,20 @@ function ProductItem(item) {
     price,
     quantity
   } = item;
-  const [state, dispatch] = useStoreContext();
-  const { cart } = state;
+  const cart = useSelector((state) => state.cart.cart);
+  const dispatch = useDispatch();
   
-  const addToCart = () => {
-    const itemInCart = cart.find((cartItem) => cartItem._id === _id)
+  const addToCartClick = () => {
+    const itemInCart = cart.find((cartItem) => cartItem._id === _id);
     if (itemInCart) {
-      dispatch({
-        type: UPDATE_CART_QUANTITY,
-        _id: _id,
-        purchaseQuantity: parseInt(itemInCart.purchaseQuantity) + 1
-      });
+      const newQuantity = parseInt(itemInCart.purchaseQuantity) + 1;
+      dispatch(updateCartQuantity({_id: item._id, purchaseQuantity: newQuantity}));
       idbPromise('cart', 'put', {
         ...itemInCart,
-        purchaseQuantity: parseInt(itemInCart.purchaseQuantity) + 1
+        purchaseQuantity: newQuantity
       });
     } else {
-      dispatch({
-        type: ADD_TO_CART,
-        product: { ...item, purchaseQuantity: 1 }
-      });
+      dispatch(addToCart({ ...item, purchaseQuantity: 1 }));
       idbPromise('cart', 'add', { ...item, purchaseQuantity: 1 });
     }
   };
@@ -52,7 +44,7 @@ function ProductItem(item) {
         <div>{quantity} {pluralize("item", quantity)} in stock</div>
         <span>${price}</span>
       </div>
-      <button onClick={addToCart}>Add to cart</button>
+      <button onClick={addToCartClick}>Add to cart</button>
     </div>
   );
 }

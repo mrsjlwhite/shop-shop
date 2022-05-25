@@ -1,46 +1,45 @@
 import React, { useEffect } from 'react';
 import { useQuery } from '@apollo/client';
 import { QUERY_CATEGORIES } from '../../utils/queries';
-import { UPDATE_CATEGORIES, UPDATE_CURRENT_CATEGORY } from '../../utils/actions';
-import { useStoreContext } from "../../utils/GlobalState";
 import { idbPromise } from '../../utils/helpers';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateCategories, updateCurrentCategory } from '../../redux/categorySlice';
 
 function CategoryMenu() {
-  const [state, dispatch] = useStoreContext();
-  const { loading, data: categoryData } = useQuery(QUERY_CATEGORIES);
-  const { categories } = state;
+  const categories = useSelector((state) => state.categories.categories);
+  const currentCategory = useSelector((state) => state.categories.currentCategory);
+  const { data: categoryData } = useQuery(QUERY_CATEGORIES);
+  const dispatch = useDispatch();
   
   useEffect(() => {
-    if (categoryData) {
-      dispatch({
-        type: UPDATE_CATEGORIES,
-        categories: categoryData.categories
-      });
+    if (categories.length) {
+      return;
+    }
+    
+    if (categoryData && categoryData.categories) {
+      dispatch(updateCategories(categoryData.categories));
       categoryData.categories.forEach(category => {
         idbPromise('categories', 'put', category);
       });
-    } else if (!loading) {
+    } else {
       idbPromise('categories', 'get').then(categories => {
-        dispatch({
-          type: UPDATE_CATEGORIES,
-          categories: categories
-        });
+        if (categories.length) {
+          dispatch(updateCategories(categories));
+        }
       });
     }
-  }, [categoryData, loading, dispatch]);
+  }, [categoryData, categories, dispatch]);
 
   const handleClick = id => {
-    dispatch({
-      type: UPDATE_CURRENT_CATEGORY,
-      currentCategory: id
-    });
+    dispatch(updateCurrentCategory(id));
   };
-  
+
   return (
     <div>
       <h2>Choose a Category:</h2>
       {categories.map(item => (
         <button
+          style={{ backgroundColor: currentCategory === item._id ? '#ff48cd' : '#F3A847' }}
           key={item._id}
           onClick={() => {
             handleClick(item._id);

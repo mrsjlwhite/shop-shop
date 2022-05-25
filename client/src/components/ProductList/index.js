@@ -19,7 +19,7 @@ function ProductList() {
     }
     
     if (productData && productData.products) {
-      dispatch(updateProducts([productData.products]));
+      dispatch(updateProducts(productData.products));
       productData.products.forEach((product) => {
         idbPromise('products', 'put', product);
       });

@@ -26,7 +26,7 @@ function ProductItem(item) {
         purchaseQuantity: newQuantity
       });
     } else {
-      dispatch(addToCart({ ...item }));
+      dispatch(addToCart({ ...item, purchaseQuantity: 1 }));
       idbPromise('cart', 'add', { ...item, purchaseQuantity: 1 });
     }
   };

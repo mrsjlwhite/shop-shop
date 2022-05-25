@@ -50,7 +50,7 @@ function Detail() {
         purchaseQuantity: updatedQuantity
       });
     } else {
-      dispatch(addToCart({ ...currentProduct }));
+      dispatch(addToCart({ ...currentProduct, purchaseQuantity: 1 }));
       // if product isn't in the cart yet, add it to the current shopping cart in IndexedDB
       idbPromise('cart', 'add', { ...currentProduct, purchaseQuantity: 1 });
     }
